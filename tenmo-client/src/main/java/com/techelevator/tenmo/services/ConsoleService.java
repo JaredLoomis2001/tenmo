@@ -10,6 +10,7 @@ public class ConsoleService {
 
     private final Scanner scanner = new Scanner(System.in);
 
+
     public int promptForMenuSelection(String prompt) {
         int menuSelection;
         System.out.print(prompt);
