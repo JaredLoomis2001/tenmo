@@ -17,26 +17,45 @@ public class JdbcTransferDao implements TransferDao {
     @Override
     public List<Transfer> transferHistory(int account_id) {
         List<Transfer> transferList = new ArrayList<>();
-        String sql = "";
+        String sql = "SELECT * FROM transfer WHERE account_to = ? OR account_from = ?";
+        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, account_id, account_id);
 
+        while (results.next()){
+            Transfer transfer = mapToRow(results);
+            transferList.add(transfer);
+        }
 
         return transferList;
     }
 
     @Override
-    public Transfer viewTransfer(int transfer_id) {
+    public Transfer viewTransferByTransferId(int transfer_id) {
         Transfer transfer = null;
-        String sql = "";
+        String sql = "SELECT * FROM transfer WHERE transfer_id = ?";
+        SqlRowSet result = jdbcTemplate.queryForRowSet(sql, transfer_id);
 
+        while(result.next()){
+            transfer = mapToRow(result);
+        }
 
         return transfer;
     }
 
     @Override
     public Transfer createTransfer(int transfer_status_id, int transfer_type_id, BigDecimal amount, int account_to, int account_from) {
-        String sql = "";
-
         Transfer transfer = new Transfer();
+
+        String sql = "UPDATE INTO transfer (transfer_status_id, transfer_type_id, amount, account_to, account_from)";
+        jdbcTemplate.update(sql, transfer_status_id, transfer_type_id,amount,account_to, account_from);
+
+        String sql2 = "SELECT transfer_id FROM transfer ORDER BY transfer_id DESC LIMIT 1";
+        SqlRowSet result = jdbcTemplate.queryForRowSet(sql2);
+        int transfer_id = 0;
+
+        while (result.next()){
+            transfer_id = result.getInt("transfer_id");
+        }
+
         return transfer;
     }
 
