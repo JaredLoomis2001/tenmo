@@ -45,15 +45,17 @@ public class JdbcTransferDao implements TransferDao {
     public Transfer createTransfer(int transfer_status_id, int transfer_type_id, BigDecimal amount, int account_to, int account_from) {
         Transfer transfer = new Transfer();
 
-        String sql = "UPDATE INTO transfer (transfer_status_id, transfer_type_id, amount, account_to, account_from)";
+        String sql = "INSERT INTO transfer (transfer_status_id, transfer_type_id, amount, account_to, account_from) " +
+                "VALUES (? , ? , ? , ? , ?)";
+
         jdbcTemplate.update(sql, transfer_status_id, transfer_type_id,amount,account_to, account_from);
 
         String sql2 = "SELECT transfer_id FROM transfer ORDER BY transfer_id DESC LIMIT 1";
-        SqlRowSet result = jdbcTemplate.queryForRowSet(sql2);
-        int transfer_id = 0;
 
-        while (result.next()){
-            transfer_id = result.getInt("transfer_id");
+        SqlRowSet result = jdbcTemplate.queryForRowSet(sql2);
+
+        while (result.next()) {
+            transfer = mapToRow(result);
         }
 
         return transfer;

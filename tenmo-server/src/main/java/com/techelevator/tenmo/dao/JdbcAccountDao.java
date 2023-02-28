@@ -28,7 +28,7 @@ public class JdbcAccountDao implements AccountDao{
 
     @Override
     public BigDecimal viewBalance(int account_id) {
-        BigDecimal balance = new BigDecimal(0);
+        BigDecimal balance = null;
         String sql = "SELECT balance FROM account WHERE account_id = ?";
         SqlRowSet result = jdbcTemplate.queryForRowSet(sql,account_id);
         while (result.next()){
@@ -61,7 +61,7 @@ public class JdbcAccountDao implements AccountDao{
         fromBalance = fromBalance.subtract(transferAmount);
         toBalance = toBalance.add(transferAmount);
 
-        String sqlTransferFrom = "UPDSATE account SET balance = ? WHERE account_id = ?";
+        String sqlTransferFrom = "UPDATE account SET balance = ? WHERE account_id = ?";
         jdbcTemplate.update(sqlTransferFrom, fromBalance, transfer.getAccount_from());
 
         String sqlTransferTo = "UPDATE account SET balance = ? WHERE account_id = ?";

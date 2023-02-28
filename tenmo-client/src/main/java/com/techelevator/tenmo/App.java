@@ -16,6 +16,10 @@ public class App {
 
     private AuthenticatedUser currentUser;
 
+    //The plan is to make a new service method for account and transfer using the base URL in the constructor, then
+    //create methods within it to pull the data from the server needed using extensions for the base URL. Need to
+    //confirm with Nicholas about some things I myself am confused on
+
 
 
 
