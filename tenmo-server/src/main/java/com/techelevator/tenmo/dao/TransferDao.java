@@ -6,8 +6,8 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public interface TransferDao {
-    public List<Transfer> transferHistory(int account_id);
-    public Transfer viewTransferByTransferId(int transfer_id);
-    public Transfer createTransfer(int transfer_status_id, int transfer_type_id, BigDecimal amount, int account_to, int account_from);
+    List<Transfer> transferHistory(int account_id);
+    Transfer viewTransferByTransferId(int transfer_id);
+    Transfer createTransfer(int transfer_status_id, int transfer_type_id, BigDecimal amount, int account_to, int account_from);
 
 }
