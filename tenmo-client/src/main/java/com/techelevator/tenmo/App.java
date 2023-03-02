@@ -19,7 +19,7 @@ public class App {
 
     private final ConsoleService consoleService = new ConsoleService();
     private final AuthenticationService authenticationService = new AuthenticationService(API_BASE_URL);
-    private AccountService accountService;
+    private AccountService accountService = new AccountService(API_BASE_URL);
     private final RestTemplate restTemplate = new RestTemplate();
 
 
@@ -101,16 +101,8 @@ public class App {
     }
 
 	private void viewCurrentBalance() {
-        int promptedID;
-
-        Account account;
-
-        promptedID = consoleService.promptForInt("Please enter your user ID : "); // remove
-
-        account = accountService.getAccountByUserId(promptedID);
-
-        System.out.println(account.getBalance());
-
+        accountService.setUser(currentUser);
+        System.out.println(accountService.viewCurrentBalance());
         mainMenu();
     }
 
