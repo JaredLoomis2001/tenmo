@@ -14,20 +14,24 @@ import java.util.Scanner;
 
 
 public class AccountService {
-    private final String baseUrl = "http://localhost:8080/";
+    private final String baseUrl;
     private static AuthenticatedUser currentUser;
     private static AuthenticationService authenticationService;
     private final RestTemplate restTemplate = new RestTemplate();
 
-    public AccountService(AuthenticationService authenticationService){
-        this.authenticationService = authenticationService;
+    public AccountService (String url) {
+       this.baseUrl = url;
     }
 
-    AccountService accountService = new AccountService(new AuthenticationService(baseUrl));
+    public void setUser (AuthenticatedUser user) {
+        currentUser = user;
+    }
 
     public BigDecimal viewCurrentBalance() {
+
         HttpEntity entity = getEntity();
-        BigDecimal currentBalance = restTemplate.exchange(baseUrl + "users/" + currentUser.getUser().getId() + "/balance", HttpMethod.GET, entity, BigDecimal.class).getBody();
+        BigDecimal currentBalance =
+                restTemplate.exchange(baseUrl + "accounts/balance/", HttpMethod.GET, entity, BigDecimal.class).getBody();
         return currentBalance;
     }
 

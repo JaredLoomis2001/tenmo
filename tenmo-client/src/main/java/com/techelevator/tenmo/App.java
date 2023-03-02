@@ -6,11 +6,8 @@ import com.techelevator.tenmo.model.UserCredentials;
 import com.techelevator.tenmo.services.AccountService;
 import com.techelevator.tenmo.services.AuthenticationService;
 import com.techelevator.tenmo.services.ConsoleService;
-import com.techelevator.util.BasicLogger;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
-import org.springframework.web.client.ResourceAccessException;
-import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
 
 import javax.sql.DataSource;
@@ -22,7 +19,7 @@ public class App {
 
     private final ConsoleService consoleService = new ConsoleService();
     private final AuthenticationService authenticationService = new AuthenticationService(API_BASE_URL);
-    private AccountService accountService;
+    private AccountService accountService = new AccountService(API_BASE_URL);
     private final RestTemplate restTemplate = new RestTemplate();
 
 
@@ -104,21 +101,9 @@ public class App {
     }
 
 	private void viewCurrentBalance() {
-
-        /*
-        int promptedID;
-
-        Account account;
-
-        promptedID = consoleService.promptForInt("Please enter your user ID : "); // remove
-
-        account = accountService.getAccountByUserId(promptedID);
-
-        System.out.println(account.getBalance());
-
+        accountService.setUser(currentUser);
+        System.out.println(accountService.viewCurrentBalance());
         mainMenu();
-
-         */
     }
 
 	private void viewTransferHistory() {

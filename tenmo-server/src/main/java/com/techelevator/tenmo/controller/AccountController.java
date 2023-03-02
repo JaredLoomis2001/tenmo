@@ -23,7 +23,7 @@ public class AccountController {
         return accountDao.getAccountByUserId(user_id);
     }
 
-    @RequestMapping(path = "/accounts/balance/", method = RequestMethod.GET)
+    @RequestMapping(path = "/accounts/balance/{id}", method = RequestMethod.GET)
     public BigDecimal viewBalance(@PathVariable int account_id){
         return accountDao.viewBalance(account_id);
     }
