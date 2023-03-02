@@ -92,22 +92,5 @@ public class ConsoleService {
         System.out.println("An error occurred. Check the log for details.");
     }
 
-    public List<User> getAccountUsers(User[] users, int currentUser_id){
-        List<User> userList = new ArrayList<>();
-
-        System.out.println("-------------------------------------------");
-        System.out.println("Users");
-        System.out.println("ID             Username");
-        System.out.println("-------------------------------------------");
-        for( User user: users){
-            if(user.getId() == currentUser_id){
-                continue;
-            }
-            userList.add(user);
-            System.out.println(user.getId()+ "             " + user.getUsername());
-        }
-        System.out.println("---------");
-        return userList;
-    }
 
 }
