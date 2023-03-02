@@ -1,9 +1,12 @@
 package com.techelevator.tenmo.services;
 
 
+import com.techelevator.tenmo.model.User;
 import com.techelevator.tenmo.model.UserCredentials;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class ConsoleService {
@@ -87,6 +90,24 @@ public class ConsoleService {
 
     public void printErrorMessage() {
         System.out.println("An error occurred. Check the log for details.");
+    }
+
+    public List<User> getAccountUsers(User[] users, int currentUser_id){
+        List<User> userList = new ArrayList<>();
+
+        System.out.println("-------------------------------------------");
+        System.out.println("Users");
+        System.out.println("ID             Username");
+        System.out.println("-------------------------------------------");
+        for( User user: users){
+            if(user.getId() == currentUser_id){
+                continue;
+            }
+            userList.add(user);
+            System.out.println(user.getId()+ "             " + user.getUsername());
+        }
+        System.out.println("---------");
+        return userList;
     }
 
 }
