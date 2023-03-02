@@ -1,7 +1,9 @@
 package com.techelevator.tenmo;
 
+import com.techelevator.tenmo.model.Account;
 import com.techelevator.tenmo.model.AuthenticatedUser;
 import com.techelevator.tenmo.model.UserCredentials;
+import com.techelevator.tenmo.services.AccountService;
 import com.techelevator.tenmo.services.AuthenticationService;
 import com.techelevator.tenmo.services.ConsoleService;
 
@@ -14,7 +16,13 @@ public class App {
     private final ConsoleService consoleService = new ConsoleService();
     private final AuthenticationService authenticationService = new AuthenticationService(API_BASE_URL);
 
+    private final AccountService accountService = new AccountService(API_BASE_URL);
+
     private AuthenticatedUser currentUser;
+
+    //The plan is to make a new service method for account and transfer using the base URL in the constructor, then
+    //create methods within it to pull the data from the server needed using extensions for the base URL. Need to
+    //confirm with Nicholas about some things I myself am confused on
 
 
 
@@ -92,7 +100,17 @@ public class App {
 
 	private void viewCurrentBalance() {
 		// TODO Auto-generated method stub
+        int promptedID;
 
+        Account account;
+
+        promptedID = consoleService.promptForInt("Please enter your user ID : ");
+
+        account = accountService.getAccountByUserId(promptedID);
+
+        System.out.println(account.getBalance());
+
+        mainMenu();
 	}
 
 	private void viewTransferHistory() {

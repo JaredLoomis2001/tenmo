@@ -6,9 +6,11 @@ import com.techelevator.tenmo.model.User;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.SqlInOutParameter;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
+import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 
+@Component
 public class JdbcAccountDao implements AccountDao{
 
     private JdbcTemplate jdbcTemplate;
@@ -16,7 +18,7 @@ public class JdbcAccountDao implements AccountDao{
     public JdbcAccountDao (JdbcTemplate jdbcTemplate) {this.jdbcTemplate = jdbcTemplate;}
 
     @Override
-    public Account findAccountByUserId(int user_id) {
+    public Account getAccountByUserId(int user_id) {
         Account account = null;
         String sql = "SELECT account_id, user_id, balance FROM account WHERE user_id = ?";
         SqlRowSet results = jdbcTemplate.queryForRowSet(sql, user_id);
@@ -28,7 +30,7 @@ public class JdbcAccountDao implements AccountDao{
 
     @Override
     public BigDecimal viewBalance(int account_id) {
-        BigDecimal balance = new BigDecimal(0);
+        BigDecimal balance = null;
         String sql = "SELECT balance FROM account WHERE account_id = ?";
         SqlRowSet result = jdbcTemplate.queryForRowSet(sql,account_id);
         while (result.next()){
@@ -61,7 +63,7 @@ public class JdbcAccountDao implements AccountDao{
         fromBalance = fromBalance.subtract(transferAmount);
         toBalance = toBalance.add(transferAmount);
 
-        String sqlTransferFrom = "UPDSATE account SET balance = ? WHERE account_id = ?";
+        String sqlTransferFrom = "UPDATE account SET balance = ? WHERE account_id = ?";
         jdbcTemplate.update(sqlTransferFrom, fromBalance, transfer.getAccount_from());
 
         String sqlTransferTo = "UPDATE account SET balance = ? WHERE account_id = ?";
