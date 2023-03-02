@@ -118,12 +118,12 @@ public class App {
 
 	private void sendBucks() {
 		// TODO Auto-generated method stub
-		
+		//Prompt for Username and amount needed, checking not to send money to yourself
+
 	}
 
 	private void requestBucks() {
 		// TODO Auto-generated method stub
-		
 	}
 
 }
