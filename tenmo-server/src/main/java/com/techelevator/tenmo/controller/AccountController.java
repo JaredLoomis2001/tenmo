@@ -19,13 +19,13 @@ public class AccountController {
     }
 
     @RequestMapping(path = "/user/account/{id}", method = RequestMethod.GET)
-    public Account getAccountByUserId(@RequestParam int user_id){
-        return accountDao.getAccountByUserId(user_id);
+    public Account getAccountByUserId(@PathVariable int id){
+        return accountDao.getAccountByUserId(id);
     }
 
     @RequestMapping(path = "/user/account/balance/{id}", method = RequestMethod.GET)
-    public BigDecimal viewBalance(@PathVariable int account_id){
-        return accountDao.viewBalance(account_id);
+    public BigDecimal viewBalance(@PathVariable int id){
+        return accountDao.viewBalance(id);
     }
 
     @RequestMapping(path = "/user/transfer/", method = RequestMethod.PUT)
