@@ -6,8 +6,11 @@ import com.techelevator.tenmo.model.UserCredentials;
 import com.techelevator.tenmo.services.AccountService;
 import com.techelevator.tenmo.services.AuthenticationService;
 import com.techelevator.tenmo.services.ConsoleService;
+import com.techelevator.util.BasicLogger;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
+import org.springframework.web.client.ResourceAccessException;
+import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
 
 import javax.sql.DataSource;
@@ -101,6 +104,8 @@ public class App {
     }
 
 	private void viewCurrentBalance() {
+
+        /*
         int promptedID;
 
         Account account;
@@ -112,6 +117,8 @@ public class App {
         System.out.println(account.getBalance());
 
         mainMenu();
+
+         */
     }
 
 	private void viewTransferHistory() {
