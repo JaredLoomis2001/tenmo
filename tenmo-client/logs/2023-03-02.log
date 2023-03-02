@@ -6,3 +6,4 @@
 2023-03-02T15:17:17.7772167 null 404 : [{"timestamp":"2023-03-02T21:17:17.760+00:00","status":404,"error":"Not Found","message":"No message available","path":"/user/account/balance/"}]
 2023-03-02T15:18:34.4892916 null 404 : [{"timestamp":"2023-03-02T21:18:34.472+00:00","status":404,"error":"Not Found","message":"No message available","path":"/user/account/balance/"}]
 2023-03-02T15:35:55.2517569 null 400 : [{"timestamp":"2023-03-02T21:35:55.237+00:00","status":400,"error":"Bad Request","message":"Required int parameter 'user_id' is not present","path":"/user/account/balance"}]
+2023-03-02T16:23:33.6269676 null 401 : [{"timestamp":"2023-03-02T22:23:32.633+00:00","status":401,"error":"Unauthorized","message":"Full authentication is required to access this resource","path":"/user/account/balance/2003"}]
