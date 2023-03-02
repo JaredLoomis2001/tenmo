@@ -31,13 +31,13 @@ public class UserController {
         return user;
     }
 
-    @RequestMapping(path = "/user/username", method = RequestMethod.GET)
+    @RequestMapping(path = "/user/{username}", method = RequestMethod.GET)
     public User findUserByUsername(@RequestParam String name){
         User user = userDao.findByUsername(name);
         return user;
     }
 
-    @RequestMapping(path = "/user/{id}/username", method = RequestMethod.GET)
+    @RequestMapping(path = "/user/{username}", method = RequestMethod.GET)
     public int findIdByUsername(@RequestParam String username){
         int id = userDao.findIdByUsername(username);
         return id;

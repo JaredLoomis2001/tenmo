@@ -18,17 +18,17 @@ public class AccountController {
         this.accountDao = accountDao;
     }
 
-    @RequestMapping(path = "", method = RequestMethod.GET)
+    @RequestMapping(path = "/user/account/{id}", method = RequestMethod.GET)
     public Account getAccountByUserId(@RequestParam int user_id){
         return accountDao.getAccountByUserId(user_id);
     }
 
-    @RequestMapping(path = "/accounts/balance/{id}", method = RequestMethod.GET)
+    @RequestMapping(path = "/user/account/balance/{id}", method = RequestMethod.GET)
     public BigDecimal viewBalance(@PathVariable int account_id){
         return accountDao.viewBalance(account_id);
     }
 
-    @RequestMapping(path = "/new-transfer/approved", method = RequestMethod.PUT)
+    @RequestMapping(path = "/user/transfer/", method = RequestMethod.PUT)
     public void transferMoney(@RequestBody Transfer transfer){
         accountDao.transferFunds(transfer);
     }

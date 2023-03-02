@@ -4,8 +4,9 @@ import com.techelevator.tenmo.App;
 import com.techelevator.tenmo.model.Account;
 import com.techelevator.tenmo.model.AuthenticatedUser;
 import com.techelevator.tenmo.model.Transfer;
-import com.techelevator.tenmo.model.UserCredentials;
+import com.techelevator.util.BasicLogger;
 import org.springframework.http.*;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
@@ -28,11 +29,17 @@ public class AccountService {
     }
 
     public BigDecimal viewCurrentBalance() {
-
+        BigDecimal currentBalance = null;
         HttpEntity entity = getEntity();
-        BigDecimal currentBalance =
-                restTemplate.exchange(baseUrl + "accounts/balance/", HttpMethod.GET, entity, BigDecimal.class).getBody();
+        try {
+            currentBalance =
+                    restTemplate.exchange(baseUrl + "user/account/balance/", HttpMethod.GET, entity, BigDecimal.class).getBody();
+        } catch (HttpClientErrorException e) {
+            BasicLogger.log(e.getCause() + " " + e.getMessage());
+        }
         return currentBalance;
+
+        // user id -->
     }
 
     public Transfer[] viewTransferHistory(){
@@ -97,7 +104,7 @@ public class AccountService {
 
      */
     
-    public static HttpEntity getEntity() {
+    private static HttpEntity getEntity() {
         String token = currentUser.getToken();
 
         HttpHeaders header = new HttpHeaders();
