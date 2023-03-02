@@ -6,8 +6,12 @@ import com.techelevator.tenmo.model.UserCredentials;
 import com.techelevator.tenmo.services.AccountService;
 import com.techelevator.tenmo.services.AuthenticationService;
 import com.techelevator.tenmo.services.ConsoleService;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.web.client.RestTemplate;
 
 import javax.sql.DataSource;
+import java.math.BigDecimal;
 
 public class App {
 
@@ -15,17 +19,15 @@ public class App {
 
     private final ConsoleService consoleService = new ConsoleService();
     private final AuthenticationService authenticationService = new AuthenticationService(API_BASE_URL);
+    private AccountService accountService;
+    private final RestTemplate restTemplate = new RestTemplate();
 
-    private final AccountService accountService = new AccountService(API_BASE_URL);
 
     private AuthenticatedUser currentUser;
 
     //The plan is to make a new service method for account and transfer using the base URL in the constructor, then
     //create methods within it to pull the data from the server needed using extensions for the base URL. Need to
     //confirm with Nicholas about some things I myself am confused on
-
-
-
 
 
     public static void main(String[] args) {
@@ -99,7 +101,6 @@ public class App {
     }
 
 	private void viewCurrentBalance() {
-		// TODO Auto-generated method stub
         int promptedID;
 
         Account account;
@@ -111,7 +112,7 @@ public class App {
         System.out.println(account.getBalance());
 
         mainMenu();
-	}
+    }
 
 	private void viewTransferHistory() {
 		// TODO Auto-generated method stub
