@@ -28,6 +28,8 @@ public class AccountService {
         HttpEntity entity = getEntity();
         BigDecimal currentBalance = restTemplate.exchange(baseUrl + "users/" + currentUser.getUser().getId() + "/balance", HttpMethod.GET, entity, BigDecimal.class).getBody();
         return currentBalance;
+
+        // user id -->
     }
 
     public Transfer[] viewTransferHistory(){

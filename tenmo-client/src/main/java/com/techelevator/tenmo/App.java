@@ -105,7 +105,7 @@ public class App {
 
         Account account;
 
-        promptedID = consoleService.promptForInt("Please enter your user ID : ");
+        promptedID = consoleService.promptForInt("Please enter your user ID : "); // remove
 
         account = accountService.getAccountByUserId(promptedID);
 
