@@ -28,7 +28,7 @@ public class TransferController {
         return transferDao.viewTransferByTransferId(transfer_id);
     }
 
-    @RequestMapping(path = "/user/transfer/{id}", method = RequestMethod.GET)
+    @RequestMapping(path = "/user/transfer/account/{id}", method = RequestMethod.GET)
     public List<Transfer> getTransferHistory (@PathVariable int account_id){
         return transferDao.transferHistory(account_id);
     }
