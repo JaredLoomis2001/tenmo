@@ -30,10 +30,12 @@ public class AccountService {
 
     public BigDecimal viewCurrentBalance() {
         BigDecimal currentBalance = null;
-        HttpEntity entity = getEntity();
+        Account currentAccount;
+        currentAccount = getAccountByUserId(currentUser.getUser().getId());
+        HttpEntity entity = createAccountEntity(currentAccount);
         try {
             currentBalance =
-                    restTemplate.exchange(baseUrl + "user/account/balance/", HttpMethod.GET, entity, BigDecimal.class).getBody();
+                    restTemplate.exchange(baseUrl + "/user/account/balance/" + currentAccount.getAccount_id(), HttpMethod.GET, entity, BigDecimal.class).getBody();
         } catch (HttpClientErrorException e) {
             BasicLogger.log(e.getCause() + " " + e.getMessage());
         }
@@ -95,14 +97,14 @@ public class AccountService {
         return account;
     }
 
-    /*
+
     private HttpEntity<Account> createAccountEntity (Account account) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         return new HttpEntity<>(account , headers);
     }
 
-     */
+
     
     private static HttpEntity getEntity() {
         String token = currentUser.getToken();
