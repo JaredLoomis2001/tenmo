@@ -20,7 +20,7 @@ public class AccountController {
 
     @RequestMapping(path = "", method = RequestMethod.GET)
     public Account getAccountByUserId(@RequestParam int user_id){
-        return accountDao.findAccountByUserId(user_id);
+        return accountDao.getAccountByUserId(user_id);
     }
 
     @RequestMapping(path = "", method = RequestMethod.GET)
