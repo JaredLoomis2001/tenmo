@@ -20,24 +20,24 @@ public class UserController {
         this.userDao = userDao;
     }
 
-    @RequestMapping(path = "", method = RequestMethod.GET)
+    @RequestMapping(path = "/user", method = RequestMethod.GET)
     public List<User> list(){
         return userDao.findAll();
     }
 
-    @RequestMapping(path = "", method = RequestMethod.GET)
+    @RequestMapping(path = "/user/{id}", method = RequestMethod.GET)
     public User findUserById(@RequestParam int id){
         User user = userDao.getUserById(id);
         return user;
     }
 
-    @RequestMapping(path = "", method = RequestMethod.GET)
+    @RequestMapping(path = "/user/username", method = RequestMethod.GET)
     public User findUserByUsername(@RequestParam String name){
         User user = userDao.findByUsername(name);
         return user;
     }
 
-    @RequestMapping(path = "", method = RequestMethod.GET)
+    @RequestMapping(path = "/user/{id}/username", method = RequestMethod.GET)
     public int findIdByUsername(@RequestParam String username){
         int id = userDao.findIdByUsername(username);
         return id;

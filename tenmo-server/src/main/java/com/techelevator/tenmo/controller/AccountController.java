@@ -23,12 +23,12 @@ public class AccountController {
         return accountDao.getAccountByUserId(user_id);
     }
 
-    @RequestMapping(path = "", method = RequestMethod.GET)
+    @RequestMapping(path = "/users/{id}/balance", method = RequestMethod.GET)
     public BigDecimal viewBalance(@PathVariable int account_id){
         return accountDao.viewBalance(account_id);
     }
 
-    @RequestMapping(path = "", method = RequestMethod.PUT)
+    @RequestMapping(path = "/new-transfer/approved", method = RequestMethod.PUT)
     public void transferMoney(@RequestBody Transfer transfer){
         accountDao.transferFunds(transfer);
     }
