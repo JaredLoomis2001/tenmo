@@ -77,4 +77,14 @@ public class Transfer {
     public void setAccount_from(int account_from) {
         this.account_from = account_from;
     }
+
+    public String toString(User user) {
+        if (user.getId() == this.getAccount_from()){
+            return this.transfer_id + "        " + "From: " +user.getUsername() + "        " + new BigDecimal(String.valueOf(this.amount));
+        }
+        else if (user.getId() == this.getAccount_to()) {
+            return this.transfer_id + "        " + "To: " +user.getUsername() + "        " + new BigDecimal(String.valueOf(this.amount));
+        }
+        else return "invalid transaction";
+    }
 }
