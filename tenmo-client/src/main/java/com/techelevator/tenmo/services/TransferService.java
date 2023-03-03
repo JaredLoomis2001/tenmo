@@ -29,7 +29,9 @@ public class TransferService {
 
     public Transfer[] viewTransferHistory(){
         HttpEntity entity = getEntity();
-        Transfer[] transfer = restTemplate.exchange(baseUrl + "users/" + currentUser.getUser().getId() + "/transfer", HttpMethod.GET, getEntity(), Transfer[].class).getBody();
+        Account currentAccount;
+        currentAccount = getAccountByUserId(currentUser.getUser().getId());
+        Transfer[] transfer = restTemplate.exchange(baseUrl + "/user/transfer/account/" + currentAccount.getAccount_id(), HttpMethod.GET, getEntity(), Transfer[].class).getBody();
         // insert method that goes through the transfers and displays them
         return transfer;
     }
@@ -67,13 +69,13 @@ public class TransferService {
     }
 
 
-    private HttpEntity<Account> createAccountEntity (Account account) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        return new HttpEntity<>(account , headers);
+    public Account getAccountByUserId (int user_id) {
+        Account account = null;
+        HttpEntity<Account> entity = getEntity();
+        account = restTemplate.exchange(baseUrl + "user/account/" + user_id, HttpMethod.GET, entity, Account.class).getBody();
+
+        return account;
     }
-
-
 
     private static HttpEntity getEntity() {
         String token = currentUser.getToken();
