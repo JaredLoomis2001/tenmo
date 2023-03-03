@@ -32,8 +32,8 @@ public class UserController {
     }
 
     @RequestMapping(path = "/user/{username}", method = RequestMethod.GET)
-    public User findUserByUsername(@RequestParam String name){
-        User user = userDao.findByUsername(name);
+    public User findUserByUsername(@RequestParam String username){
+        User user = userDao.findByUsername(username);
         return user;
     }
 

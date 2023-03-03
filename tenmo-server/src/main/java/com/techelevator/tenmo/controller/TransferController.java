@@ -29,7 +29,7 @@ public class TransferController {
     }
 
     @RequestMapping(path = "/user/transfer/account/{id}", method = RequestMethod.GET)
-    public List<Transfer> getTransferHistory (@PathVariable int account_id){
-        return transferDao.transferHistory(account_id);
+    public List<Transfer> getTransferHistory (@PathVariable int id){
+        return transferDao.transferHistory(id);
     }
 }
