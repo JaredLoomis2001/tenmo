@@ -5,27 +5,27 @@ import com.techelevator.tenmo.model.Account;
 import com.techelevator.tenmo.model.AuthenticatedUser;
 import com.techelevator.tenmo.model.Transfer;
 import com.techelevator.tenmo.model.User;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
+import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
+import java.util.Scanner;
 
 public class TransferService {
     private String baseUrl = null;
     private static AuthenticatedUser currentUser;
     private static AuthenticationService authenticationService;
     private final RestTemplate restTemplate = new RestTemplate();
+    private ConsoleService consoleService = new ConsoleService();
+    private Scanner scanner = new Scanner(System.in);
 
     AccountService accountService = new AccountService(baseUrl);
 
-    public TransferService (String url) {
+    public TransferService(String url) {
         baseUrl = url;
     }
 
-    public void setUser (AuthenticatedUser user) {
+    public void setUser(AuthenticatedUser user) {
         currentUser = user;
     }
 
@@ -38,23 +38,24 @@ public class TransferService {
         return transferArr;
     }
 
-    public void displayTransfers(HttpEntity entity, Transfer[] transferArr){
+    public void displayTransfers(HttpEntity entity, Transfer[] transferArr) {
+
         String[] transfer = new String[transferArr.length];
         String[] userAccountFrom = new String[transferArr.length];
-        String [] userAccountTo = new String[transferArr.length];
+        String[] userAccountTo = new String[transferArr.length];
         String[] transferType = new String[transferArr.length];
-        String [] transferStatus = new String[transferArr.length];
+        String[] transferStatus = new String[transferArr.length];
 
 
         System.out.println("Transfers");
         System.out.println("ID            Account From            Account To            Amount");
         System.out.println("-------------------------------------------------------------------");
 
-        for (int i = 0; i < transferArr.length; i++){
+        for (int i = 0; i < transferArr.length; i++) {
 
-            if (transferArr[i].getAccount_from() == currentUser.getUser().getId()){
+            if (transferArr[i].getAccount_from() == currentUser.getUser().getId()) {
                 HttpEntity userEntity = getEntity();
-                User recipient = restTemplate.exchange(baseUrl + "/user" + transferArr[i].getAccount_from(), HttpMethod.GET, userEntity, User.class).getBody();
+                User recipient = restTemplate.exchange(baseUrl + "/user/transfer" + transferArr[i].getAccount_from(), HttpMethod.GET, userEntity, User.class).getBody();
 
                 String transferred = transferArr[i].toString(recipient);
                 transfer[i] = transferred;
@@ -62,12 +63,13 @@ public class TransferService {
                 userAccountFrom[i] = currentUser.getUser().getUsername();
                 userAccountTo[i] = recipient.getUsername();
 
-                getTransferDetails(transferArr, transfer,transferType, transferStatus, i, transferred);
+                getTransferDetails(transferArr, transfer, transferType, transferStatus, i, transferred);
+
             }
 
-            if (transferArr[i].getAccount_to() == currentUser.getUser().getId()){
+            if (transferArr[i].getAccount_to() == currentUser.getUser().getId()) {
                 HttpEntity userEntity = getEntity();
-                User sender = restTemplate.exchange(baseUrl + "/user" + transferArr[i].getAccount_from(), HttpMethod.GET, userEntity, User.class).getBody();
+                User sender = restTemplate.exchange(baseUrl + "/user/transfer" + transferArr[i].getAccount_from(), HttpMethod.GET, userEntity, User.class).getBody();
                 String transferred = transferArr[i].toString(sender);
                 transfer[i] = transferred;
 
@@ -78,7 +80,34 @@ public class TransferService {
             }
         }
 
+        /*
+        String choice = String.valueOf(consoleService.promptForInt(String.valueOf(transfer)));
+        if (choice.equals("0")) {
+            return;
+        }
+        String[] choiceArr = choice.split("\\t");
+        int choiceID = Integer.parseInt(choiceArr[0]);
+
+        Transfer transferDetails = restTemplate.exchange(baseUrl + "/user/transfer/id/" + choiceID, HttpMethod.GET, entity, Transfer.class).getBody();
+
+         */
+
+
+        for (int i = 0; i < transferArr.length; i++) {
+           // if (transferArr[i].getTransfer_id() == choiceID) {
+                System.out.println("Transfer: " + transferArr[i].getTransfer_id());
+                System.out.println("---------------------------------------------");
+                System.out.println("ID: " + transferArr[i].getTransfer_id());
+                System.out.println("From: " + userAccountFrom[i]);
+                System.out.println("To: " + userAccountTo[i]);
+                System.out.println("Type: " + transferType[i]);
+                System.out.println("Status: " + transferStatus[i]);
+                System.out.println("Amount: $" + new BigDecimal(String.valueOf(transferArr[i].getAmount())));
+
+        }
+
     }
+
 
     private void getTransferDetails(Transfer[] transferArr, String [] transfer, String[] transferType, String [] transferStatus, int i, String details){
 
