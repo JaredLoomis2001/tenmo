@@ -17,7 +17,7 @@ public class TransferController {
         this.transferDao = transferDao;
     }
 
-    @RequestMapping(path = "/user/transfer", method = RequestMethod.GET)
+    @RequestMapping(path = "/user/transfer", method = RequestMethod.POST)
     public Transfer newTransfer(@RequestBody Transfer transfer){
         return transfer = transferDao.newTransfer(transfer.getTransfer_status_id(), transfer.getTransfer_type_id(), transfer.getAmount(), transfer.getAccount_to(), transfer.getAccount_from());
     }
@@ -30,6 +30,11 @@ public class TransferController {
     @RequestMapping(path = "/user/transfer/account/{id}", method = RequestMethod.GET)
     public List<Transfer> getTransferHistory (@PathVariable int id){
         return transferDao.transferHistory(id);
+    }
+
+    @RequestMapping(path = "/user/transfer", method = RequestMethod.PUT)
+    public void updateTransfer(@RequestBody Transfer transfer){
+        transferDao.updateTransfer(transfer);
     }
 
 }

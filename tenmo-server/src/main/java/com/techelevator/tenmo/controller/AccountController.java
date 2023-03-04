@@ -28,10 +28,13 @@ public class AccountController {
         return accountDao.viewBalance(id);
     }
 
+
     @RequestMapping(path = "/user/transfer/", method = RequestMethod.PUT)
     public void transferMoney(@RequestBody Transfer transfer){
         accountDao.transferFunds(transfer);
     }
+
+
 
 
 }

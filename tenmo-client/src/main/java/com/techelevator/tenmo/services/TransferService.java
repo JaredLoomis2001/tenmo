@@ -140,7 +140,7 @@ public class TransferService {
         Transfer completedTransfer = restTemplate.exchange(baseUrl + "", HttpMethod.PUT, entity, Transfer.class).getBody();
     }
 
-    public boolean sendBucks (String username , BigDecimal amountSent) {
+    public void sendBucks (String username , BigDecimal amountSent) {
         //Need searchAccountByUsername
         Account accountFrom;
         Account accountTo;
@@ -155,12 +155,12 @@ public class TransferService {
 
         if (accountTo == accountFrom) {
             System.out.println("Cannot Send Money to Yourself");
-            return false;
+            return;
         }
 
         if (accountFrom.getBalance().compareTo(amountSent) < 0) {
             System.out.println("Cannot Send More Than You Have");
-            return false;
+            return;
         }
 
 
@@ -169,11 +169,20 @@ public class TransferService {
 
         HttpEntity<Account> entity = getEntity();
 
-        restTemplate.put(baseUrl + "user/account/balance/" + accountFrom.getAccount_id() , Account.class , accountFrom.getBalance() , entity);
-        restTemplate.put(baseUrl + "user/account/balance/" + accountTo.getAccount_id() , Account.class , accountTo.getBalance() , entity);
+        restTemplate.put(baseUrl + "user/transfer/" + accountFrom.getAccount_id() , Account.class , accountFrom.getBalance() , entity);
+        restTemplate.put(baseUrl + "user/transfer/" + accountTo.getAccount_id() , Account.class , accountTo.getBalance() , entity);
 
-        return true;
+        Transfer transferring = new Transfer();
+        transferring.setAmount(amountSent);
+        transferring.setAccount_to(accountTo.getAccount_id());
+        transferring.setAccount_from(accountFrom.getAccount_id());
+        transferring.setTransfer_type_id(2);
+        transferring.setTransfer_status_id(2);
 
+        restTemplate.put(baseUrl + "user/transfer", transferring, entity);
+
+        System.out.println("Transfer Status: Approved");
+        System.out.println("Your current balance is: " + accountFrom.getBalance());
     }
 
     private void newTransfer (Transfer transfer) {

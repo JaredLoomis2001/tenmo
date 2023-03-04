@@ -109,8 +109,8 @@ public class App {
     }
 
 	private void viewTransferHistory() {
-		transferService.setUser(currentUser);
-        System.out.println(transferService.viewTransferHistory());
+        transferService.setUser(currentUser);
+        transferService.viewTransferHistory();
         mainMenu();
 		
 	}
@@ -124,12 +124,17 @@ public class App {
 		// TODO Auto-generated method stub
 		//Prompt for Username and amount needed, checking not to send money to yourself
         transferService.setUser(currentUser);
+
         String username;
         BigDecimal amount;
         boolean success;
 
         username = consoleService.promptForString("Input the username of the User you want to send money to : ");
         amount = consoleService.promptForBigDecimal("Input how much you would like to send : ");
+
+        transferService.sendBucks(username,amount);
+
+        /*
 
         success = transferService.sendBucks(username , amount);
 
@@ -140,6 +145,8 @@ public class App {
             System.out.println("Your transfer was unsuccessful");
             mainMenu();
         }
+
+         */
 
 
 	}

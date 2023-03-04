@@ -78,6 +78,10 @@ public class Transfer {
         this.account_from = account_from;
     }
 
+    public void updateTransfer(Transfer transfer){
+
+    }
+
     public String toString(User user) {
         if (user.getId() == this.getAccount_from()){
             return this.transfer_id + "/t" + "From: " + user.getUsername() + "/t$" + new BigDecimal(String.valueOf(this.amount));
