@@ -111,18 +111,61 @@ public class TransferService {
         Transfer completedTransfer = restTemplate.exchange(baseUrl + "", HttpMethod.PUT, entity, Transfer.class).getBody();
     }
 
-    private void sendBucks (Account account , BigDecimal amountSent) {
+    public boolean sendBucks (String username , BigDecimal amountSent) {
         //Need searchAccountByUsername
+        Account accountFrom;
+        Account accountTo;
+        User user;
+        Account tester;
+
+        user = getUserByUsername(username);
+        accountTo = getAccountByUserId(user.getId());
+
+        user = currentUser.getUser();
+        accountFrom = getAccountByUserId(user.getId());
+
+        if (accountTo == accountFrom) {
+            System.out.println("Cannot Send Money to Yourself");
+            return false;
+        }
+
+        if (accountFrom.getBalance().compareTo(amountSent) < 0) {
+            System.out.println("Cannot Send More Than You Have");
+            return false;
+        }
+
+
+        accountFrom.setBalance(accountFrom.getBalance().subtract(amountSent));
+        accountTo.setBalance(accountTo.getBalance().add(amountSent));
+
+        HttpEntity<Account> entity = getEntity();
+
+        restTemplate.put(baseUrl + "user/account/balance/" + accountFrom.getAccount_id() , Account.class , accountFrom.getBalance() , entity);
+        restTemplate.put(baseUrl + "user/account/balance/" + accountTo.getAccount_id() , Account.class , accountTo.getBalance() , entity);
+
+        return true;
 
     }
 
+    private void newTransfer (Transfer transfer) {
+        HttpEntity<Transfer> entity = getEntity();
+        restTemplate.postForObject(baseUrl + "user/transfer" , HttpMethod.POST , Transfer.class , transfer , entity);
+    }
 
-    public Account getAccountByUserId (int user_id) {
+
+    public Account getAccountByUserId (int id) {
         Account account = null;
         HttpEntity<Account> entity = getEntity();
-        account = restTemplate.exchange(baseUrl + "user/account/" + user_id, HttpMethod.GET, entity, Account.class).getBody();
+        account = restTemplate.exchange(baseUrl + "user/account/" + id, HttpMethod.GET, entity, Account.class).getBody();
 
         return account;
+    }
+
+    public User getUserByUsername (String username) {
+        User user = null;
+        HttpEntity<User> userEnt = getEntity();
+        user = restTemplate.exchange(baseUrl + "user/" + username , HttpMethod.GET , userEnt , User.class).getBody();
+        return user;
     }
 
     private static HttpEntity getEntity() {

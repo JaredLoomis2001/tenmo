@@ -20,8 +20,8 @@ public class App {
 
     private final ConsoleService consoleService = new ConsoleService();
     private final AuthenticationService authenticationService = new AuthenticationService(API_BASE_URL);
-    private AccountService accountService = new AccountService(API_BASE_URL);
-    private TransferService transferService = new TransferService(API_BASE_URL);
+    private final AccountService accountService = new AccountService(API_BASE_URL);
+    private final TransferService transferService = new TransferService(API_BASE_URL);
     private final RestTemplate restTemplate = new RestTemplate();
 
 
@@ -123,6 +123,24 @@ public class App {
 	private void sendBucks() {
 		// TODO Auto-generated method stub
 		//Prompt for Username and amount needed, checking not to send money to yourself
+        transferService.setUser(currentUser);
+        String username;
+        BigDecimal amount;
+        boolean success;
+
+        username = consoleService.promptForString("Input the username of the User you want to send money to : ");
+        amount = consoleService.promptForBigDecimal("Input how much you would like to send : ");
+
+        success = transferService.sendBucks(username , amount);
+
+        if (success) {
+            System.out.println("Your transfer was successful!");
+            mainMenu();
+        } else {
+            System.out.println("Your transfer was unsuccessful");
+            mainMenu();
+        }
+
 
 	}
 

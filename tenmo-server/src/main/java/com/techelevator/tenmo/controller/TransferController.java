@@ -5,7 +5,6 @@ import com.techelevator.tenmo.model.Transfer;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 @PreAuthorize("isAuthenticated()")
@@ -18,9 +17,9 @@ public class TransferController {
         this.transferDao = transferDao;
     }
 
-    @RequestMapping(path = "/user/transfer", method = RequestMethod.POST)
+    @RequestMapping(path = "/user/transfer", method = RequestMethod.GET)
     public Transfer newTransfer(@RequestBody Transfer transfer){
-        return transfer = transferDao.createTransfer(transfer.getTransfer_status_id(), transfer.getTransfer_type_id(), transfer.getAmount(), transfer.getAccount_to(), transfer.getAccount_from());
+        return transfer = transferDao.newTransfer(transfer.getTransfer_status_id(), transfer.getTransfer_type_id(), transfer.getAmount(), transfer.getAccount_to(), transfer.getAccount_from());
     }
 
     @RequestMapping(path = "/user/transfer/{id}", method = RequestMethod.GET)
@@ -32,4 +31,5 @@ public class TransferController {
     public List<Transfer> getTransferHistory (@PathVariable int id){
         return transferDao.transferHistory(id);
     }
+
 }

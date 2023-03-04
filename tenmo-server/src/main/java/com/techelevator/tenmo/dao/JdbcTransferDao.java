@@ -44,7 +44,7 @@ public class JdbcTransferDao implements TransferDao {
     }
 
     @Override
-    public Transfer createTransfer(int transfer_status_id, int transfer_type_id, BigDecimal amount, int account_to, int account_from) {
+    public Transfer newTransfer(int transfer_status_id, int transfer_type_id, BigDecimal amount, int account_to, int account_from) {
         Transfer transfer = new Transfer();
 
         String sql = "INSERT INTO transfer (transfer_status_id, transfer_type_id, amount, account_to, account_from) " +
