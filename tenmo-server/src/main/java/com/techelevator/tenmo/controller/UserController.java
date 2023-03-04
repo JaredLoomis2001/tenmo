@@ -3,10 +3,7 @@ package com.techelevator.tenmo.controller;
 import com.techelevator.tenmo.dao.UserDao;
 import com.techelevator.tenmo.model.User;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -25,21 +22,16 @@ public class UserController {
         return userDao.findAll();
     }
 
-    @RequestMapping(path = "/user/{id}", method = RequestMethod.GET)
+    @RequestMapping(path = "/user/id/{id}", method = RequestMethod.GET)
     public User findUserById(@RequestParam int id){
         User user = userDao.getUserById(id);
         return user;
     }
 
     @RequestMapping(path = "/user/{username}", method = RequestMethod.GET)
-    public User findUserByUsername(@RequestParam String username){
+    public User findUserByUsername(@PathVariable String username){
         User user = userDao.findByUsername(username);
         return user;
     }
 
-    @RequestMapping(path = "/user/id/{username}", method = RequestMethod.GET)
-    public int findIdByUsername(@RequestParam String username){
-        int id = userDao.findIdByUsername(username);
-        return id;
-    }
 }

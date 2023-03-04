@@ -146,7 +146,7 @@ public class TransferService {
 
     private void newTransfer (Transfer transfer) {
         HttpEntity<Transfer> entity = getEntity();
-        restTemplate.exchange(baseUrl + "user/transfer" , HttpMethod.POST , entity , Transfer.class);
+        restTemplate.exchange(baseUrl + "user/transfer/" + transfer , HttpMethod.POST , entity , Transfer.class);
     }
 
 
@@ -161,8 +161,9 @@ public class TransferService {
     public Account getAccountByUserName (String username) {
         Account account;
         User user;
+        HttpEntity<User> userEnt = getEntity();
         HttpEntity<Account> entity = getEntity();
-        user = restTemplate.exchange(baseUrl + "user/" + username , HttpMethod.GET , entity , User.class).getBody();
+        user = restTemplate.exchange(baseUrl + "user/" + username , HttpMethod.GET , userEnt , User.class).getBody();
 
         account = restTemplate.exchange(baseUrl + "user/account/" + user.getId() , HttpMethod.GET , entity , Account.class).getBody();
         return account;

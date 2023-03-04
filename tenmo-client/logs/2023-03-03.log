@@ -1,0 +1,3 @@
+2023-03-03T21:20:02.8533176 null 400 : [{"timestamp":"2023-03-04T03:20:02.813+00:00","status":400,"error":"Bad Request","message":"Required int parameter 'id' is not present","path":"/user/account/balance/2004"}]
+2023-03-03T21:23:12.3627403 null 400 : [{"timestamp":"2023-03-04T03:22:57.879+00:00","status":400,"error":"Bad Request","message":"Required int parameter 'id' is not present","path":"/user/account/balance/2005"}]
+2023-03-03T21:24:45.95821 I/O error on POST request for "http://localhost:8080/register": Connection refused: connect; nested exception is java.net.ConnectException: Connection refused: connect

@@ -8,6 +8,6 @@ import java.util.List;
 public interface TransferDao {
     List<Transfer> transferHistory(int account_id);
     Transfer viewTransferByTransferId(int transfer_id);
-    Transfer createTransfer(int transfer_status_id, int transfer_type_id, BigDecimal amount, int account_to, int account_from);
+    Transfer newTransfer(int transfer_status_id, int transfer_type_id, BigDecimal amount, int account_to, int account_from);
 
 }
