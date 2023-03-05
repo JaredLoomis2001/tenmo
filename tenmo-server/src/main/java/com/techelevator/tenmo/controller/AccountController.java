@@ -29,10 +29,7 @@ public class AccountController {
     }
 
 
-    @RequestMapping(path = "/user/transfer/", method = RequestMethod.PUT)
-    public void transferMoney(@RequestBody Transfer transfer){
-        accountDao.transferFunds(transfer);
-    }
+
 
 
 

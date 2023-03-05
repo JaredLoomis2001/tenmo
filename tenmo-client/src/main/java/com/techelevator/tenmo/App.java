@@ -1,17 +1,13 @@
 package com.techelevator.tenmo;
 
-import com.techelevator.tenmo.model.Account;
 import com.techelevator.tenmo.model.AuthenticatedUser;
 import com.techelevator.tenmo.model.UserCredentials;
 import com.techelevator.tenmo.services.AccountService;
 import com.techelevator.tenmo.services.AuthenticationService;
 import com.techelevator.tenmo.services.ConsoleService;
 import com.techelevator.tenmo.services.TransferService;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
 import org.springframework.web.client.RestTemplate;
 
-import javax.sql.DataSource;
 import java.math.BigDecimal;
 
 public class App {
@@ -132,7 +128,7 @@ public class App {
         username = consoleService.promptForString("Input the username of the User you want to send money to : ");
         amount = consoleService.promptForBigDecimal("Input how much you would like to send : ");
 
-        transferService.sendBucks(username,amount);
+        transferService.transferMoney(username,amount);
 
         /*
 

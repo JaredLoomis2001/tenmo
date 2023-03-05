@@ -1,6 +1,5 @@
 package com.techelevator.tenmo.services;
 
-import com.techelevator.tenmo.App;
 import com.techelevator.tenmo.model.Account;
 import com.techelevator.tenmo.model.AuthenticatedUser;
 import com.techelevator.tenmo.model.Transfer;
@@ -140,12 +139,11 @@ public class TransferService {
         Transfer completedTransfer = restTemplate.exchange(baseUrl + "", HttpMethod.PUT, entity, Transfer.class).getBody();
     }
 
-    public void sendBucks (String username , BigDecimal amountSent) {
+    public void transferMoney(String username , BigDecimal amountSent) {
         //Need searchAccountByUsername
         Account accountFrom;
         Account accountTo;
         User user;
-        Account tester;
 
         user = getUserByUsername(username);
         accountTo = getAccountByUserId(user.getId());
@@ -163,14 +161,10 @@ public class TransferService {
             return;
         }
 
+        HttpHeaders header = new HttpHeaders();
+        header.setBearerAuth(currentUser.getToken());
 
-        accountFrom.setBalance(accountFrom.getBalance().subtract(amountSent));
-        accountTo.setBalance(accountTo.getBalance().add(amountSent));
 
-        HttpEntity<Account> entity = getEntity();
-
-        restTemplate.put(baseUrl + "user/transfer/" + accountFrom.getAccount_id() , Account.class , accountFrom.getBalance() , entity);
-        restTemplate.put(baseUrl + "user/transfer/" + accountTo.getAccount_id() , Account.class , accountTo.getBalance() , entity);
 
         Transfer transferring = new Transfer();
         transferring.setAmount(amountSent);
@@ -179,16 +173,20 @@ public class TransferService {
         transferring.setTransfer_type_id(2);
         transferring.setTransfer_status_id(2);
 
-        restTemplate.put(baseUrl + "user/transfer", transferring, entity);
+        HttpEntity<Transfer> entity = new HttpEntity<>(transferring , getEntity().getHeaders());
+
+        restTemplate.exchange(baseUrl + "user/transfer/", HttpMethod.POST , entity , Transfer.class);
+
 
         System.out.println("Transfer Status: Approved");
-        System.out.println("Your current balance is: " + accountFrom.getBalance());
+        System.out.println("Your current balance is: " + accountFrom.getBalance().subtract(amountSent));
     }
 
-    private void newTransfer (Transfer transfer) {
-        HttpEntity<Transfer> entity = getEntity();
-        restTemplate.postForObject(baseUrl + "user/transfer" , HttpMethod.POST , Transfer.class , transfer , entity);
-    }
+
+//    private void newTransfer (Transfer transfer) {
+//        HttpEntity<Transfer> entity = getEntity();
+//        restTemplate.postForObject(baseUrl + "user/transfer" , HttpMethod.POST , Transfer.class , transfer , entity);
+//    }
 
 
     public Account getAccountByUserId (int id) {
@@ -210,9 +208,9 @@ public class TransferService {
         String token = currentUser.getToken();
 
         HttpHeaders header = new HttpHeaders();
+        header.setContentType(MediaType.APPLICATION_JSON);
         header.setBearerAuth(token);
 
-        HttpEntity entity = new HttpEntity<>(header);
-        return entity;
+        return new HttpEntity<>(header);
     }
 }

@@ -40,40 +40,7 @@ public class JdbcAccountDao implements AccountDao{
         return balance;
     }
 
-    @Override
-    public void transferFunds(Transfer transfer) {
-        BigDecimal fromBalance = new BigDecimal(0);
-        BigDecimal toBalance = new BigDecimal(0);
-        BigDecimal transferAmount = new BigDecimal(String.valueOf(transfer.getAmount()));
 
-        String sqlTransferSelectFrom = "SELECT * FROM account WHERE account_id = ?";
-        SqlRowSet result = jdbcTemplate.queryForRowSet(sqlTransferSelectFrom, transfer.getAccount_from());
-        while (result.next()){
-            fromBalance = new BigDecimal(String.valueOf(result.getBigDecimal("balance")));
-        }
-
-
-        String sqlTransferSelectTo = "SELECT * FROM account WHERE account_id = ?";
-        SqlRowSet result2 = jdbcTemplate.queryForRowSet(sqlTransferSelectTo, transfer.getAccount_to());
-        while (result2.next()){
-            toBalance = new BigDecimal(String.valueOf(result2.getBigDecimal("balance")));
-        }
-
-
-        fromBalance = fromBalance.subtract(transferAmount);
-        toBalance = toBalance.add(transferAmount);
-
-        String sqlTransferFrom = "UPDATE account SET balance = ? WHERE account_id = ?";
-        jdbcTemplate.update(sqlTransferFrom, fromBalance, transfer.getAccount_from());
-
-        String sqlTransferTo = "UPDATE account SET balance = ? WHERE account_id = ?";
-        jdbcTemplate.update(sqlTransferTo, toBalance, transfer.getAccount_to());
-
-        String sqlUpdateStatus = "UPDATE transfer SET transfer_status_id = 2 WHERE transfer_id = ?";
-        jdbcTemplate.update(sqlUpdateStatus, transfer.getTransfer_id());
-
-
-    }
 
     private Account mapToRow (SqlRowSet results){
         Account account = new Account();

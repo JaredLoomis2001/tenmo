@@ -17,10 +17,10 @@ public class TransferController {
         this.transferDao = transferDao;
     }
 
-    @RequestMapping(path = "/user/transfer", method = RequestMethod.POST)
-    public Transfer newTransfer(@RequestBody Transfer transfer){
-        return transfer = transferDao.newTransfer(transfer.getTransfer_status_id(), transfer.getTransfer_type_id(), transfer.getAmount(), transfer.getAccount_to(), transfer.getAccount_from());
-    }
+//    @RequestMapping(path = "/user/transfer", method = RequestMethod.POST)
+//    public Transfer newTransfer(@RequestBody Transfer transfer){
+//        return transfer = transferDao.newTransfer(transfer.getTransfer_status_id(), transfer.getTransfer_type_id(), transfer.getAmount(), transfer.getAccount_to(), transfer.getAccount_from());
+//    }
 
     @RequestMapping(path = "/user/transfer/{id}", method = RequestMethod.GET)
     public Transfer viewTransferByTransferId(@PathVariable("id") int transfer_id){
@@ -32,9 +32,14 @@ public class TransferController {
         return transferDao.transferHistory(id);
     }
 
-    @RequestMapping(path = "/user/transfer", method = RequestMethod.PUT)
-    public void updateTransfer(@RequestBody Transfer transfer){
-        transferDao.updateTransfer(transfer);
+//    @RequestMapping(path = "/user/transfer/{id}", method = RequestMethod.PUT)
+//    public void updateTransfer(@RequestBody Transfer transfer){
+//        transferDao.updateTransfer(transfer);
+//    }
+
+    @RequestMapping(path = "/user/transfer/", method = RequestMethod.POST)
+    public void transferMoney(@RequestBody Transfer transfer){
+        transferDao.transferFunds(transfer);
     }
 
 }
