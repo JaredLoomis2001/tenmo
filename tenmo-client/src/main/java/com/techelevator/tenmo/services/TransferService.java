@@ -4,6 +4,7 @@ import com.techelevator.tenmo.model.Account;
 import com.techelevator.tenmo.model.AuthenticatedUser;
 import com.techelevator.tenmo.model.Transfer;
 import com.techelevator.tenmo.model.User;
+import com.techelevator.util.BasicLogger;
 import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
 
@@ -30,38 +31,39 @@ public class TransferService {
         currentUser = user;
     }
 
-    public Transfer[] viewTransferHistory(){
+    public void viewTransferHistory(){
+        int id;
         HttpEntity entity = getEntity();
         Transfer[] transfers = null;
-        transfers= restTemplate.exchange(baseUrl + "/user/transfer/account/" + currentUser.getUser().getId(), HttpMethod.GET, entity, Transfer[].class).getBody();
+        int userIn = 0;
+
+        id = getAccountByUserId(currentUser.getUser().getId()).getAccount_id();
+
+        transfers= restTemplate.exchange(baseUrl + "/user/transfer/account/" + id , HttpMethod.GET, entity, Transfer[].class).getBody();
 
         System.out.println("-------------------------------------------");
         System.out.println("                  Transfers                ");
         System.out.println("ID         From          To          Amount");
 
-        String fromOrTo = "";
-        int name = 0;
-
         for (Transfer t: transfers){
-            if (currentUser.getUser().getId() == t.getAccount_from()){
-                fromOrTo = "From: ";
-                name = currentUser.getUser().getId();
-            } else {
-                fromOrTo = "To: ";
-                name = t.getAccount_to();
-
-            }
-            System.out.println(t.getTransfer_id() + "         " + fromOrTo + name + "         " + t.getAmount());
+            System.out.println(t.getTransfer_id() + "          " + t.getAccount_from() + "          " + t.getAccount_to() + "         " + t.getAmount());
         }
         System.out.println("-------------------------------------------");
         System.out.println("Please enter transfer ID to view details (0 to cancel)");
         Scanner scanner = new Scanner(System.in);
         String input = scanner.nextLine();
-        if(Integer.parseInt(input) != 0){
-            boolean foundTransfer = false;
+        try {
+            userIn = Integer.parseInt(input);
+        } catch (Exception e) {
+            BasicLogger.log(e.getCause() + " : " + e.getMessage());
+        }
+
+        boolean foundTransfer = false;
+
+        if(userIn != 0){
             for (Transfer t: transfers){
                 if (Integer.parseInt(input) == t.getTransfer_id()){
-                    Transfer trans = restTemplate.exchange(baseUrl + "/user/transfer/account/" + t.getTransfer_id(), HttpMethod.GET, entity, Transfer.class).getBody();
+                    Transfer trans = restTemplate.exchange(baseUrl + "/user/transfer/" + t.getTransfer_id(), HttpMethod.GET, entity, Transfer.class).getBody();
                     foundTransfer = true;
                     System.out.println("-------------------------------------------");
                     System.out.println("ID: " + t.getTransfer_id());
@@ -76,8 +78,6 @@ public class TransferService {
                 System.out.println("Not a valid transfer ID");
             }
         }
-
-        return transfers;
     }
 
 
@@ -129,7 +129,7 @@ public class TransferService {
     public Account getAccountByUserId (int id) {
         Account account = null;
         HttpEntity<Account> entity = getEntity();
-        account = restTemplate.exchange(baseUrl + "user/account/id/" + id, HttpMethod.GET, entity, Account.class).getBody();
+        account = restTemplate.exchange(baseUrl + "user/account/" + id, HttpMethod.GET, entity, Account.class).getBody();
 
         return account;
     }
