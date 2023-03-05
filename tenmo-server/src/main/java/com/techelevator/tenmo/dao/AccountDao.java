@@ -9,7 +9,7 @@ import java.util.List;
 public interface AccountDao {
     Account getAccountByUserId(int user_id);
     BigDecimal viewBalance(int account_id);
-
     List<Account> list();
+    Account getAccountByAccountId(int id);
 
 }

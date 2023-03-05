@@ -20,9 +20,14 @@ public class AccountController {
         this.accountDao = accountDao;
     }
 
-    @RequestMapping(path = "/user/account/{id}", method = RequestMethod.GET)
+    @RequestMapping(path = "/user/account/id/{id}", method = RequestMethod.GET)
     public Account getAccountByUserId(@PathVariable int id){
         return accountDao.getAccountByUserId(id);
+    }
+
+    @RequestMapping (path = "/user/account/{id}" , method = RequestMethod.GET)
+    public Account getAccountByAccountId(@PathVariable int id) {
+        return accountDao.getAccountByAccountId(id);
     }
 
     @RequestMapping(path = "/user/account/balance/{id}", method = RequestMethod.GET)

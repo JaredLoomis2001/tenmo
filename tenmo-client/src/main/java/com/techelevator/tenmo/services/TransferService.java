@@ -189,36 +189,37 @@ public class TransferService {
     public Account getAccountByUserId (int id) {
         Account account = null;
         HttpEntity<Account> entity = getEntity();
-        account = restTemplate.exchange(baseUrl + "user/account/" + id, HttpMethod.GET, entity, Account.class).getBody();
+        account = restTemplate.exchange(baseUrl + "user/account/id/" + id, HttpMethod.GET, entity, Account.class).getBody();
 
         return account;
     }
 
     public Account getAccountByAccountId (int id) {
-        return restTemplate.exchange(baseUrl + "user/account/" + id , HttpMethod.GET , getEntity() , Account.class).getBody();
+        Account acc = null;
+        HttpEntity<Account> accEnt = getEntity();
+        acc = restTemplate.exchange(baseUrl + "user/account/" + id , HttpMethod.GET , accEnt , Account.class).getBody();
+        return acc;
     }
 
-    public User getUserByUsername (String username) {
-        User user = null;
-        HttpEntity<User> userEnt = getEntity();
-        user = restTemplate.exchange(baseUrl + "user/" + username , HttpMethod.GET , userEnt , User.class).getBody();
-        return user;
-    }
 
     public User getUserById(int id) {
         User user = null;
         HttpEntity<User> userEnt = getEntity();
-        user = restTemplate.exchange(baseUrl + "user/id/" + id , HttpMethod.GET , userEnt , User.class).getBody();
+        user = restTemplate.exchange(baseUrl + "user/id/" + id, HttpMethod.GET , userEnt , User.class).getBody();
         return user;
     }
 
     public void listAccounts () {
+        User user;
+        String username;
         Account[] accs = restTemplate.exchange(baseUrl + "user/account" , HttpMethod.GET , getEntity() , Account[].class).getBody();
 
         System.out.println("USERNAME----------------------------ID");
 
         for (Account acc : accs) {
-            System.out.println(getUserById(acc.getUser_id()).getUsername() + "--------------------" + acc.getAccount_id());
+            user = getUserById(acc.getUser_id());
+            username = user.getUsername();
+            System.out.println(username + "                         " + acc.getAccount_id());
         }
     }
 
