@@ -1,8 +1,15 @@
 package com.techelevator.tenmo.services;
 
 
+import com.techelevator.tenmo.model.Account;
+import com.techelevator.tenmo.model.AuthenticatedUser;
 import com.techelevator.tenmo.model.User;
 import com.techelevator.tenmo.model.UserCredentials;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -11,7 +18,32 @@ import java.util.Scanner;
 
 public class ConsoleService {
 
+    String baseUrl;
+
+    AuthenticatedUser currentUser;
+
     private final Scanner scanner = new Scanner(System.in);
+
+    private RestTemplate restTemplate;
+
+
+    public void setUrl (String url) {
+        baseUrl = url;
+    }
+
+    public void setCurrentUser (AuthenticatedUser user) {
+        currentUser = user;
+    }
+
+    public HttpEntity getEntity () {
+        String token = currentUser.getToken();
+
+        HttpHeaders header = new HttpHeaders();
+        header.setContentType(MediaType.APPLICATION_JSON);
+        header.setBearerAuth(token);
+
+        return new HttpEntity<>(header);
+    }
 
 
     public int promptForMenuSelection(String prompt) {

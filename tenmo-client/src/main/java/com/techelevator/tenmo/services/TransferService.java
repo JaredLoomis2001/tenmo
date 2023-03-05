@@ -139,14 +139,13 @@ public class TransferService {
         Transfer completedTransfer = restTemplate.exchange(baseUrl + "", HttpMethod.PUT, entity, Transfer.class).getBody();
     }
 
-    public void transferMoney(String username , BigDecimal amountSent) {
+    public void transferMoney(int id , BigDecimal amountSent) {
         //Need searchAccountByUsername
         Account accountFrom;
         Account accountTo;
         User user;
 
-        user = getUserByUsername(username);
-        accountTo = getAccountByUserId(user.getId());
+        accountTo = getAccountByAccountId(id);
 
         user = currentUser.getUser();
         accountFrom = getAccountByUserId(user.getId());
@@ -161,10 +160,6 @@ public class TransferService {
             return;
         }
 
-        HttpHeaders header = new HttpHeaders();
-        header.setBearerAuth(currentUser.getToken());
-
-
 
         Transfer transferring = new Transfer();
         transferring.setAmount(amountSent);
@@ -173,6 +168,8 @@ public class TransferService {
         transferring.setTransfer_type_id(2);
         transferring.setTransfer_status_id(2);
 
+        HttpHeaders header = new HttpHeaders();
+        header.setBearerAuth(currentUser.getToken());
         HttpEntity<Transfer> entity = new HttpEntity<>(transferring , getEntity().getHeaders());
 
         restTemplate.exchange(baseUrl + "user/transfer/", HttpMethod.POST , entity , Transfer.class);
@@ -197,11 +194,32 @@ public class TransferService {
         return account;
     }
 
+    public Account getAccountByAccountId (int id) {
+        return restTemplate.exchange(baseUrl + "user/account/" + id , HttpMethod.GET , getEntity() , Account.class).getBody();
+    }
+
     public User getUserByUsername (String username) {
         User user = null;
         HttpEntity<User> userEnt = getEntity();
         user = restTemplate.exchange(baseUrl + "user/" + username , HttpMethod.GET , userEnt , User.class).getBody();
         return user;
+    }
+
+    public User getUserById(int id) {
+        User user = null;
+        HttpEntity<User> userEnt = getEntity();
+        user = restTemplate.exchange(baseUrl + "user/id/" + id , HttpMethod.GET , userEnt , User.class).getBody();
+        return user;
+    }
+
+    public void listAccounts () {
+        Account[] accs = restTemplate.exchange(baseUrl + "user/account" , HttpMethod.GET , getEntity() , Account[].class).getBody();
+
+        System.out.println("USERNAME----------------------------ID");
+
+        for (Account acc : accs) {
+            System.out.println(getUserById(acc.getUser_id()).getUsername() + "--------------------" + acc.getAccount_id());
+        }
     }
 
     private static HttpEntity getEntity() {

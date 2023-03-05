@@ -6,7 +6,9 @@ import com.techelevator.tenmo.model.Transfer;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.awt.*;
 import java.math.BigDecimal;
+import java.util.List;
 
 @PreAuthorize("isAuthenticated()")
 @RestController
@@ -29,7 +31,8 @@ public class AccountController {
     }
 
 
-
+    @RequestMapping(path = "/user/account" , method = RequestMethod.GET)
+    public List<Account> list () { return accountDao.list(); }
 
 
 

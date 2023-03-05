@@ -121,14 +121,16 @@ public class App {
 		//Prompt for Username and amount needed, checking not to send money to yourself
         transferService.setUser(currentUser);
 
-        String username;
+        int id;
         BigDecimal amount;
         boolean success;
-
-        username = consoleService.promptForString("Input the username of the User you want to send money to : ");
+        transferService.listAccounts();
+        id = consoleService.promptForInt("Input the ID of the User to send money to");
         amount = consoleService.promptForBigDecimal("Input how much you would like to send : ");
 
-        transferService.transferMoney(username,amount);
+        transferService.transferMoney(id,amount);
+
+        mainMenu();
 
         /*
 

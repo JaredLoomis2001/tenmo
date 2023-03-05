@@ -9,6 +9,8 @@ import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class JdbcAccountDao implements AccountDao{
@@ -38,6 +40,21 @@ public class JdbcAccountDao implements AccountDao{
         }
 
         return balance;
+    }
+
+    @Override
+    public List<Account> list () {
+        List<Account> accounts = new ArrayList<>();
+        String sql = "SELECT account_id , balance , user_id FROM account";
+
+        SqlRowSet results = jdbcTemplate.queryForRowSet(sql);
+
+        while (results.next()) {
+            Account acc = mapToRow(results);
+            accounts.add(acc);
+        }
+
+        return accounts;
     }
 
 
