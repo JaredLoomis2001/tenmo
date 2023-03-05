@@ -8,6 +8,8 @@ import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Scanner;
 
 public class TransferService {
@@ -30,117 +32,56 @@ public class TransferService {
 
     public Transfer[] viewTransferHistory(){
         HttpEntity entity = getEntity();
-        Account currentAccount;
-        currentAccount = getAccountByUserId(currentUser.getUser().getId());
-        Transfer[] transferArr = restTemplate.exchange(baseUrl + "/user/transfer/account/" + currentAccount.getAccount_id(), HttpMethod.GET, getEntity(), Transfer[].class).getBody();
-        displayTransfers(entity, transferArr);
-        return transferArr;
-    }
+        Transfer[] transfers = null;
+        transfers= restTemplate.exchange(baseUrl + "/user/transfer/account/" + currentUser.getUser().getId(), HttpMethod.GET, entity, Transfer[].class).getBody();
 
-    public void displayTransfers(HttpEntity entity, Transfer[] transferArr) {
+        System.out.println("-------------------------------------------");
+        System.out.println("                  Transfers                ");
+        System.out.println("ID         From          To          Amount");
 
-        String[] transfer = new String[transferArr.length];
-        String[] userAccountFrom = new String[transferArr.length];
-        String[] userAccountTo = new String[transferArr.length];
-        String[] transferType = new String[transferArr.length];
-        String[] transferStatus = new String[transferArr.length];
+        String fromOrTo = "";
+        int name = 0;
 
-
-        System.out.println("Transfers");
-        System.out.println("ID            Account From            Account To            Amount");
-        System.out.println("-------------------------------------------------------------------");
-
-        for (int i = 0; i < transferArr.length; i++) {
-
-            if (transferArr[i].getAccount_from() == currentUser.getUser().getId()) {
-                HttpEntity userEntity = getEntity();
-                User recipient = restTemplate.exchange(baseUrl + "/user/transfer" + transferArr[i].getAccount_from(), HttpMethod.GET, userEntity, User.class).getBody();
-
-                String transferred = transferArr[i].toString(recipient);
-                transfer[i] = transferred;
-
-                userAccountFrom[i] = currentUser.getUser().getUsername();
-                userAccountTo[i] = recipient.getUsername();
-
-                getTransferDetails(transferArr, transfer, transferType, transferStatus, i, transferred);
+        for (Transfer t: transfers){
+            if (currentUser.getUser().getId() == t.getAccount_from()){
+                fromOrTo = "From: ";
+                name = currentUser.getUser().getId();
+            } else {
+                fromOrTo = "To: ";
+                name = t.getAccount_to();
 
             }
-
-            if (transferArr[i].getAccount_to() == currentUser.getUser().getId()) {
-                HttpEntity userEntity = getEntity();
-                User sender = restTemplate.exchange(baseUrl + "/user/transfer" + transferArr[i].getAccount_from(), HttpMethod.GET, userEntity, User.class).getBody();
-                String transferred = transferArr[i].toString(sender);
-                transfer[i] = transferred;
-
-                userAccountFrom[i] = sender.getUsername();
-                userAccountTo[i] = currentUser.getUser().getUsername();
-
-                getTransferDetails(transferArr, transfer, transferType, transferStatus, i, transferred);
+            System.out.println(t.getTransfer_id() + "         " + fromOrTo + name + "         " + t.getAmount());
+        }
+        System.out.println("-------------------------------------------");
+        System.out.println("Please enter transfer ID to view details (0 to cancel)");
+        Scanner scanner = new Scanner(System.in);
+        String input = scanner.nextLine();
+        if(Integer.parseInt(input) != 0){
+            boolean foundTransfer = false;
+            for (Transfer t: transfers){
+                if (Integer.parseInt(input) == t.getTransfer_id()){
+                    Transfer trans = restTemplate.exchange(baseUrl + "/user/transfer/account/" + t.getTransfer_id(), HttpMethod.GET, entity, Transfer.class).getBody();
+                    foundTransfer = true;
+                    System.out.println("-------------------------------------------");
+                    System.out.println("ID: " + t.getTransfer_id());
+                    System.out.println("From: " + t.getAccount_from());
+                    System.out.println("To: " + t.getAccount_to());
+                    System.out.println("Type: " + t.getTransfer_type_id());
+                    System.out.println("Status: " + t.getTransfer_status_id());
+                    System.out.println("Amount: $" + t.getAmount());
+                }
+            }
+            if (!foundTransfer){
+                System.out.println("Not a valid transfer ID");
             }
         }
 
-        /*
-        String choice = String.valueOf(consoleService.promptForInt(String.valueOf(transfer)));
-        if (choice.equals("0")) {
-            return;
-        }
-        String[] choiceArr = choice.split("\\t");
-        int choiceID = Integer.parseInt(choiceArr[0]);
-
-        Transfer transferDetails = restTemplate.exchange(baseUrl + "/user/transfer/id/" + choiceID, HttpMethod.GET, entity, Transfer.class).getBody();
-
-         */
-
-
-        for (int i = 0; i < transferArr.length; i++) {
-           // if (transferArr[i].getTransfer_id() == choiceID) {
-                System.out.println("Transfer: " + transferArr[i].getTransfer_id());
-                System.out.println("---------------------------------------------");
-                System.out.println("ID: " + transferArr[i].getTransfer_id());
-                System.out.println("From: " + userAccountFrom[i]);
-                System.out.println("To: " + userAccountTo[i]);
-                System.out.println("Type: " + transferType[i]);
-                System.out.println("Status: " + transferStatus[i]);
-                System.out.println("Amount: $" + new BigDecimal(String.valueOf(transferArr[i].getAmount())));
-
-        }
-
+        return transfers;
     }
 
-
-    private void getTransferDetails(Transfer[] transferArr, String [] transfer, String[] transferType, String [] transferStatus, int i, String details){
-
-        if (transferArr[i].getTransfer_type_id() == 1){
-            transferType[i] = "Request";
-        } else {
-            transferType[i] = "Send";
-        }
-
-        if (transferArr[i].getTransfer_status_id() == 1){
-            transferStatus[i] = "Pending";
-        } else if (transferArr[i].getTransfer_status_id() == 2){
-            transferStatus[i] = "Approved";
-        } else {
-            transferStatus[i] = "Rejected";
-        }
-        transfer[i] = details;
-    }
-
-    // method to approve transfers
-    private void approveTransfer(Transfer transfer){
-        if (new BigDecimal(String.valueOf(transfer.getAmount())).compareTo(accountService.viewCurrentBalance()) == 1) {
-            System.out.println("You Don't Have Enough Money");
-        }
-        String token = currentUser.getToken();
-        HttpHeaders header = new HttpHeaders();
-        header.setBearerAuth(token);
-        HttpEntity<Transfer> entity = new HttpEntity<>(transfer,header);
-
-        Transfer completedTransfer = restTemplate.exchange(baseUrl + "", HttpMethod.PUT, entity, Transfer.class).getBody();
-    }
 
     public void transferMoney(int id , BigDecimal amountSent) {
-        //Need searchAccountByUsername
         Account accountFrom;
         Account accountTo;
         User user;
@@ -180,12 +121,6 @@ public class TransferService {
     }
 
 
-//    private void newTransfer (Transfer transfer) {
-//        HttpEntity<Transfer> entity = getEntity();
-//        restTemplate.postForObject(baseUrl + "user/transfer" , HttpMethod.POST , Transfer.class , transfer , entity);
-//    }
-
-
     public Account getAccountByUserId (int id) {
         Account account = null;
         HttpEntity<Account> entity = getEntity();
@@ -208,6 +143,7 @@ public class TransferService {
         user = restTemplate.exchange(baseUrl + "user/id/" + id, HttpMethod.GET , userEnt , User.class).getBody();
         return user;
     }
+
 
     public void listAccounts () {
         User user;

@@ -43,33 +43,25 @@ public class JdbcTransferDao implements TransferDao {
         return transfer;
     }
 
-//    @Override
-//    public Transfer newTransfer(int transfer_status_id, int transfer_type_id, BigDecimal amount, int account_to, int account_from) {
-//        Transfer transfer = new Transfer();
-//
-//        String sql = "INSERT INTO transfer (transfer_status_id, transfer_type_id, amount, account_to, account_from) " +
-//                "VALUES (? , ? , ? , ? , ?)";
-//
-//        jdbcTemplate.update(sql, transfer_status_id, transfer_type_id,amount,account_to, account_from);
-//
-//        String sql2 = "SELECT transfer_id FROM transfer ORDER BY transfer_id DESC LIMIT 1";
-//
-//        SqlRowSet result = jdbcTemplate.queryForRowSet(sql2);
-//
-//        while (result.next()) {
-//            transfer = mapToRow(result);
-//        }
-//
-//        return transfer;
-//    }
+    @Override
+    public Transfer newTransfer(int transfer_status_id, int transfer_type_id, BigDecimal amount, int account_to, int account_from) {
+        Transfer transfer = new Transfer();
+        String sql = "INSERT INTO transfer (transfer_status_id, transfer_type_id, amount, account_to, account_from) " +
+                "VALUES (? , ? , ? , ? , ?)";
 
-//    @Override
-//    public void updateTransfer(Transfer transfer) {
-//        String sql = "INSERT INTO transfer (transfer_status_id, transfer_type_id, amount, account_to, account_from) " +
-//                "VALUES (? , ? , ? , ? , ?)";
-//
-//        jdbcTemplate.update(sql, transfer.getTransfer_status_id(), transfer.getTransfer_type_id(),transfer.getAmount(), transfer.getAccount_to(), transfer.getAccount_from());
-//    }
+        jdbcTemplate.update(sql, transfer_status_id, transfer_type_id,amount,account_to, account_from);
+
+        String sql2 = "SELECT transfer_id FROM transfer ORDER BY transfer_id DESC LIMIT 1";
+
+        SqlRowSet result = jdbcTemplate.queryForRowSet(sql2);
+
+        while (result.next()) {
+            transfer = mapToRow(result);
+        }
+
+        return transfer;
+    }
+
 
     @Override
     public void transferFunds(Transfer transfer) {
@@ -105,10 +97,8 @@ public class JdbcTransferDao implements TransferDao {
 
         jdbcTemplate.update(sql, transfer.getTransfer_status_id(), transfer.getTransfer_type_id(),transfer.getAmount(),transfer.getAccount_to(), transfer.getAccount_from());
 
-//        String sqlUpdateStatus = "UPDATE transfer SET transfer_status_id = 2 WHERE transfer_id = ?";
-//        jdbcTemplate.update(sqlUpdateStatus, transfer.getTransfer_id());
-
-
+        String sqlUpdateStatus = "UPDATE transfer SET transfer_status_id = 2 WHERE transfer_id = ?";
+        jdbcTemplate.update(sqlUpdateStatus, transfer.getTransfer_id());
 
 
     }

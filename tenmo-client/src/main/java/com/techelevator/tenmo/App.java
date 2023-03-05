@@ -19,13 +19,7 @@ public class App {
     private final AccountService accountService = new AccountService(API_BASE_URL);
     private final TransferService transferService = new TransferService(API_BASE_URL);
     private final RestTemplate restTemplate = new RestTemplate();
-
-
     private AuthenticatedUser currentUser;
-
-    //The plan is to make a new service method for account and transfer using the base URL in the constructor, then
-    //create methods within it to pull the data from the server needed using extensions for the base URL. Need to
-    //confirm with Nicholas about some things I myself am confused on
 
 
     public static void main(String[] args) {
@@ -84,11 +78,7 @@ public class App {
             } else if (menuSelection == 2) {
                 viewTransferHistory();
             } else if (menuSelection == 3) {
-                viewPendingRequests();
-            } else if (menuSelection == 4) {
                 sendBucks();
-            } else if (menuSelection == 5) {
-                requestBucks();
             } else if (menuSelection == 0) {
                 continue;
             } else {
@@ -111,46 +101,19 @@ public class App {
 		
 	}
 
-	private void viewPendingRequests() {
-		// TODO Auto-generated method stub
-		
-	}
-
 	private void sendBucks() {
-		// TODO Auto-generated method stub
-		//Prompt for Username and amount needed, checking not to send money to yourself
         transferService.setUser(currentUser);
 
         int id;
         BigDecimal amount;
         boolean success;
         transferService.listAccounts();
-        id = consoleService.promptForInt("Input the ID of the User to send money to : ");
+        id = consoleService.promptForInt("Input the ID of the User to send money to");
         amount = consoleService.promptForBigDecimal("Input how much you would like to send : ");
 
-        transferService.transferMoney(id , amount);
+        transferService.transferMoney(id,amount);
 
         mainMenu();
 
-        /*
-
-        success = transferService.sendBucks(username , amount);
-
-        if (success) {
-            System.out.println("Your transfer was successful!");
-            mainMenu();
-        } else {
-            System.out.println("Your transfer was unsuccessful");
-            mainMenu();
-        }
-
-         */
-
-
 	}
-
-	private void requestBucks() {
-		// TODO Auto-generated method stub
-	}
-
 }
