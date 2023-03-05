@@ -160,6 +160,11 @@ public class TransferService {
             return;
         }
 
+        if (amountSent.compareTo(BigDecimal.valueOf(0)) < 1) {
+            System.out.println("Please input a non-negative value greater than 0.");
+            return;
+        }
+
 
         Transfer transferring = new Transfer();
         transferring.setAmount(amountSent);
