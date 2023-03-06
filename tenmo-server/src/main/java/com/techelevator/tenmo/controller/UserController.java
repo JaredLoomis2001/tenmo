@@ -11,6 +11,8 @@ import java.util.List;
 @RestController
 
 public class UserController {
+    //Basic Controller
+
     private UserDao userDao;
 
     public UserController(UserDao userDao){
@@ -18,7 +20,7 @@ public class UserController {
     }
 
     @RequestMapping(path = "/user", method = RequestMethod.GET)
-    public List<User> list(){
+    public List<User> listUsers(){
         return userDao.findAll();
     }
 

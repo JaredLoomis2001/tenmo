@@ -17,33 +17,9 @@ import java.util.List;
 import java.util.Scanner;
 
 public class ConsoleService {
-
-    String baseUrl;
-
-    AuthenticatedUser currentUser;
+    //Unchanged
 
     private final Scanner scanner = new Scanner(System.in);
-
-    private RestTemplate restTemplate;
-
-
-    public void setUrl (String url) {
-        baseUrl = url;
-    }
-
-    public void setCurrentUser (AuthenticatedUser user) {
-        currentUser = user;
-    }
-
-    public HttpEntity getEntity () {
-        String token = currentUser.getToken();
-
-        HttpHeaders header = new HttpHeaders();
-        header.setContentType(MediaType.APPLICATION_JSON);
-        header.setBearerAuth(token);
-
-        return new HttpEntity<>(header);
-    }
 
 
     public int promptForMenuSelection(String prompt) {

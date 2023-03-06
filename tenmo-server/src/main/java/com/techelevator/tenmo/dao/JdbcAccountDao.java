@@ -19,6 +19,7 @@ public class JdbcAccountDao implements AccountDao{
 
     public JdbcAccountDao (JdbcTemplate jdbcTemplate) {this.jdbcTemplate = jdbcTemplate;}
 
+    //Searches the database for an Account with the matching User ID
     @Override
     public Account getAccountByUserId(int user_id) {
         Account account = null;
@@ -30,6 +31,7 @@ public class JdbcAccountDao implements AccountDao{
         return account;
     }
 
+    //Similar function as the previous method, but for Account ID
     @Override
     public Account getAccountByAccountId (int id) {
         Account account = null;
@@ -41,6 +43,7 @@ public class JdbcAccountDao implements AccountDao{
         return account;
     }
 
+    //Searches the database for the balance associated with the Account ID
     @Override
     public BigDecimal viewBalance(int account_id) {
         BigDecimal balance = null;
@@ -53,6 +56,7 @@ public class JdbcAccountDao implements AccountDao{
         return balance;
     }
 
+    //Finds all the accounts stored within the database for the user to peer through for the transfer money method
     @Override
     public List<Account> list () {
         List<Account> accounts = new ArrayList<>();
@@ -69,7 +73,7 @@ public class JdbcAccountDao implements AccountDao{
     }
 
 
-
+    //Helper method to map a SQLRowset to the in-question variable
     private Account mapToRow (SqlRowSet results){
         Account account = new Account();
         account.setAccount_id(results.getInt("account_id"));

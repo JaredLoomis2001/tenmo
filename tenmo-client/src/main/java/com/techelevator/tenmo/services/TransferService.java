@@ -14,14 +14,12 @@ import java.util.List;
 import java.util.Scanner;
 
 public class TransferService {
+
+    //Create all instance variables used within the class
     private String baseUrl = null;
     private static AuthenticatedUser currentUser;
-    private static AuthenticationService authenticationService;
     private final RestTemplate restTemplate = new RestTemplate();
-    private ConsoleService consoleService = new ConsoleService();
-    private Scanner scanner = new Scanner(System.in);
 
-    AccountService accountService = new AccountService(baseUrl);
 
     public TransferService(String url) {
         baseUrl = url;
@@ -31,16 +29,31 @@ public class TransferService {
         currentUser = user;
     }
 
-    public void viewTransferHistory(){
-        int id;
+    public void viewTransferHistory() {
+        //Create all necessary variables within the method
+        int id = 0;
         HttpEntity entity = getEntity();
         Transfer[] transfers = null;
         int userIn = 0;
 
-        id = getAccountByUserId(currentUser.getUser().getId()).getAccount_id();
+        //Try-Catches to catch early user errors such as not logging in or having no transfers
+        try {
+            id = getAccountByUserId(currentUser.getUser().getId()).getAccount_id();
+        } catch (Exception e) {
+            BasicLogger.log(e.getCause() + " " + e.getMessage());
+            System.out.println("Please login or register an account with us to continue!");
+            return;
+        }
 
-        transfers= restTemplate.exchange(baseUrl + "/user/transfer/account/" + id , HttpMethod.GET, entity, Transfer[].class).getBody();
+        try {
+            transfers = restTemplate.exchange(baseUrl + "/user/transfer/account/" + id , HttpMethod.GET, entity, Transfer[].class).getBody();
+        } catch (Exception e) {
+            BasicLogger.log(e.getCause() + " " + e.getMessage());
+            System.out.println("Please perform transfers with us so you can view them!");
+            return;
+        }
 
+        //The command line listing of the transfer history
         System.out.println("-------------------------------------------");
         System.out.println("                  Transfers                ");
         System.out.println("ID         From          To          Amount");
@@ -50,20 +63,25 @@ public class TransferService {
         }
         System.out.println("-------------------------------------------");
         System.out.println("Please enter transfer ID to view details (0 to cancel)");
+
+        //Check if the user inputted a non-number value
         Scanner scanner = new Scanner(System.in);
         String input = scanner.nextLine();
         try {
             userIn = Integer.parseInt(input);
         } catch (Exception e) {
             BasicLogger.log(e.getCause() + " : " + e.getMessage());
+            System.out.println("Please input a number value next time!");
+            return;
         }
 
+        //Check if the user would like to view a specific transfer as well as filter through the transfers for matching IDs
         boolean foundTransfer = false;
 
         if(userIn != 0){
             for (Transfer t: transfers){
                 if (Integer.parseInt(input) == t.getTransfer_id()){
-                    Transfer trans = restTemplate.exchange(baseUrl + "/user/transfer/" + t.getTransfer_id(), HttpMethod.GET, entity, Transfer.class).getBody();
+
                     foundTransfer = true;
                     System.out.println("-------------------------------------------");
                     System.out.println("ID: " + t.getTransfer_id());
@@ -72,25 +90,32 @@ public class TransferService {
                     System.out.println("Type: " + t.getTransfer_type_id());
                     System.out.println("Status: " + t.getTransfer_status_id());
                     System.out.println("Amount: $" + t.getAmount());
+
                 }
             }
             if (!foundTransfer){
-                System.out.println("Not a valid transfer ID");
+
+                System.out.println("ID was not found please try again");
             }
         }
     }
 
 
+    //Allows user to transfer money to other users, updates both balances, and stores the transfer information within the SQL database
     public void transferMoney(int id , BigDecimal amountSent) {
-        Account accountFrom;
+        //Necessary variables
+        Account accountFrom = null;
         Account accountTo;
         User user;
 
+        //Store the details of the account being sent money
         accountTo = getAccountByAccountId(id);
 
+        //Store the values of the current user's account for the transfer
         user = currentUser.getUser();
         accountFrom = getAccountByUserId(user.getId());
 
+        //Necessary checks to avoid negative values, sending to oneself, and sending more than you have
         if (accountTo == accountFrom) {
             System.out.println("Cannot Send Money to Yourself");
             return;
@@ -106,7 +131,7 @@ public class TransferService {
             return;
         }
 
-
+        //Store the values of the transfer being added to the database
         Transfer transferring = new Transfer();
         transferring.setAmount(amountSent);
         transferring.setAccount_to(accountTo.getAccount_id());
@@ -114,22 +139,33 @@ public class TransferService {
         transferring.setTransfer_type_id(2);
         transferring.setTransfer_status_id(2);
 
+        //Store the auth Token as well as the object being added (the transfer details)
         HttpHeaders header = new HttpHeaders();
+
         header.setBearerAuth(currentUser.getToken());
+
         HttpEntity<Transfer> entity = new HttpEntity<>(transferring , getEntity().getHeaders());
 
-        restTemplate.exchange(baseUrl + "user/transfer/", HttpMethod.POST , entity , Transfer.class);
+        //Check for any errors within the adding process
+        try {
+            restTemplate.exchange(baseUrl + "user/transfer/", HttpMethod.POST , entity , Transfer.class);
+        } catch (Exception e) {
+            BasicLogger.log(e.getCause() + " " + e.getMessage());
+            System.out.println("Transfer failed, please check the logs for further details");
+            return;
+        }
 
-
+        //Print the result to the user as well as the updated balance
         System.out.println("Transfer Status: Approved");
         System.out.println("Your current balance is: " + accountFrom.getBalance().subtract(amountSent));
     }
 
 
+    //These are the helper methods used throughout the class
     public Account getAccountByUserId (int id) {
         Account account = null;
         HttpEntity<Account> entity = getEntity();
-        account = restTemplate.exchange(baseUrl + "user/account/" + id, HttpMethod.GET, entity, Account.class).getBody();
+        account = restTemplate.exchange(baseUrl + "user/account/id/" + id, HttpMethod.GET, entity, Account.class).getBody();
 
         return account;
     }

@@ -16,6 +16,7 @@ public class JdbcTransferDao implements TransferDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    //Searches the database for all transfers that have to do with the account inputted
     @Override
     public List<Transfer> transferHistory(int account_id) {
         List<Transfer> transferList = new ArrayList<>();
@@ -30,6 +31,7 @@ public class JdbcTransferDao implements TransferDao {
         return transferList;
     }
 
+    //Searches the database for all transfers with the matching ID given
     @Override
     public Transfer viewTransferByTransferId(int transfer_id) {
         Transfer transfer = null;
@@ -43,26 +45,9 @@ public class JdbcTransferDao implements TransferDao {
         return transfer;
     }
 
-    @Override
-    public Transfer newTransfer(int transfer_status_id, int transfer_type_id, BigDecimal amount, int account_to, int account_from) {
-        Transfer transfer = new Transfer();
-        String sql = "INSERT INTO transfer (transfer_status_id, transfer_type_id, amount, account_to, account_from) " +
-                "VALUES (? , ? , ? , ? , ?)";
 
-        jdbcTemplate.update(sql, transfer_status_id, transfer_type_id,amount,account_to, account_from);
-
-        String sql2 = "SELECT transfer_id FROM transfer ORDER BY transfer_id DESC LIMIT 1";
-
-        SqlRowSet result = jdbcTemplate.queryForRowSet(sql2);
-
-        while (result.next()) {
-            transfer = mapToRow(result);
-        }
-
-        return transfer;
-    }
-
-
+    //This method is used as opposed to an updateBalance and a newTransfer method as each instance of making a new transfer would involve
+    //transferring money and should we in our future endeavors wish to add the optional functionalities this method would only need to be slightly updated
     @Override
     public void transferFunds(Transfer transfer) {
         BigDecimal fromBalance = new BigDecimal(0);
@@ -103,6 +88,7 @@ public class JdbcTransferDao implements TransferDao {
 
     }
 
+    //Helper method to map a SQLRowset to the in-question variable
     private Transfer mapToRow (SqlRowSet results){
         Transfer transfer = new Transfer();
 

@@ -106,9 +106,8 @@ public class App {
 
         int id;
         BigDecimal amount;
-        boolean success;
         transferService.listAccounts();
-        id = consoleService.promptForInt("Input the ID of the User to send money to");
+        id = consoleService.promptForInt("Input the ID of the User to send money to: ");
         amount = consoleService.promptForBigDecimal("Input how much you would like to send : ");
 
         transferService.transferMoney(id,amount);

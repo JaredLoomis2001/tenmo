@@ -11,16 +11,14 @@ import java.util.List;
 @RestController
 
 public class TransferController {
+
+    //Our standard controller. The noted out methods were created with the optional assignments in mind
+    //I.E the update transfer method would be for the Accepted/Denied status of money transfers
     TransferDao transferDao;
 
     public TransferController(TransferDao transferDao){
         this.transferDao = transferDao;
     }
-
-//    @RequestMapping(path = "/user/transfer", method = RequestMethod.POST)
-//    public Transfer newTransfer(@RequestBody Transfer transfer){
-//        return transfer = transferDao.newTransfer(transfer.getTransfer_status_id(), transfer.getTransfer_type_id(), transfer.getAmount(), transfer.getAccount_to(), transfer.getAccount_from());
-//    }
 
     @RequestMapping(path = "/user/transfer/{id}", method = RequestMethod.GET)
     public Transfer viewTransferByTransferId(@PathVariable("id") int transfer_id){
@@ -33,8 +31,8 @@ public class TransferController {
     }
 
 //    @RequestMapping(path = "/user/transfer/{id}", method = RequestMethod.PUT)
-//    public void updateTransfer(@RequestBody Transfer transfer){
-//        transferDao.updateTransfer(transfer);
+//    public void updateTransfer(@RequestBody int id){
+//        transferDao.updateTransfer(id);
 //    }
 
     @RequestMapping(path = "/user/transfer/", method = RequestMethod.POST)
